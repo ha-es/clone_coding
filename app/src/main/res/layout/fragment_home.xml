@@ -253,7 +253,7 @@
                             app:layout_constraintTop_toTopOf="parent">
 
                             <ImageView
-                                android:id="@+id/home_today_recommended_music_01_iv"
+                                android:id="@+id/home_album_img_iv1"
                                 android:layout_width="150dp"
                                 android:layout_height="150dp"
                                 android:scaleType="fitCenter"
@@ -274,6 +274,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
+                        android:id="@+id/title_lilac"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -281,6 +282,7 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
                     <TextView
+                        android:id="@+id/singer_iu"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
