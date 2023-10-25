@@ -5,8 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.setFragmentResult
+import androidx.viewpager2.widget.ViewPager2
 import com.example.clone_.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -19,18 +22,27 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.homeAlbumImgIv1.setOnClickListener{
-            val bundle = Bundle()
-            bundle.putString("title", binding.titleLilac.text.toString())
-            bundle.putString("singer",binding.singerIu.text.toString())
-
-            val albumFragment = AlbumFragment()
-            albumFragment.arguments = bundle
+        binding.homeAlbumImgIv1.setOnClickListener {
+            setFragmentResult("TitleInfo", bundleOf("title" to binding.titleLilac.text.toString()))
+            setFragmentResult("SingerInfo", bundleOf("singer" to binding.singerIu.text.toString()))
 
             (context as MainActivity)
                 .supportFragmentManager.beginTransaction()
-                .replace(R.id.main_frm,AlbumFragment()).commitAllowingStateLoss()
+                .replace(R.id.main_frm, AlbumFragment()).commitAllowingStateLoss()
         }
+
+
+        val bannerAdapter = BannerVPAdapter(this)
+
+        bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
+        bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
+        bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
+        bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
+
+        binding.homeBannerVp.adapter = bannerAdapter
+        binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+
+
 
         return binding.root
     }
