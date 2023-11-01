@@ -17,11 +17,13 @@ class PannelFragment(val imgRes : Int) : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View ?{
         binding = FragmentPannelBinding.inflate(inflater, container, false)
         binding.pannelImageIv.setImageResource(imgRes)
         return binding.root
     }
 }
+
