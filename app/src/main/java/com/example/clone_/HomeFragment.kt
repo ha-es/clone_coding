@@ -41,7 +41,8 @@ class HomeFragment : Fragment() {
         val bannerAdapter = BannerVPAdapter(this)
         binding.homeBannerVp.adapter = bannerAdapter
         binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-
+        bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
+        bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
         //ViewPager2 적용
         val pannelAdpater = PannelVpAdapter(this)
         pannelAdpater.addFragment(PannelFragment(R.drawable.img_first_album_default))

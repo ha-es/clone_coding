@@ -8,10 +8,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="상세정보 프래그먼트"
-        android:textSize="30dp"
+        android:text="LILAC(라일락)은 대한민국의 가수 아이유의 다섯 번째 정규 음반으로, 2021년 3월 25일에 발매되었다.
+   \n 발매년도 기준 한국식 나이로 29살인 아이유가 20대를 마무리하면서 지금까지 자신을 지켜봐 준 모든 사람들에게 감사 인사를 전하는 앨범이다."
+        android:textSize="15dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintTop_toTopOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
