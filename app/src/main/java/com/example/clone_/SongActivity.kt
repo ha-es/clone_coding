@@ -54,7 +54,7 @@ class SongActivity : AppCompatActivity() {
         super.onDestroy()
         timer.interrupt()
         mediaPlayer?.release()  //mediaPlayer가 갖고 있던 리소스 해제
-        mediaPlayer = null
+        mediaPlayer = null      //// 미디어 플레이어를 해제
     }
 
     private fun initSong(){
@@ -95,9 +95,13 @@ class SongActivity : AppCompatActivity() {
             binding.songMiniplayerIv.visibility = View.GONE
             binding.songPauseIv.visibility = View.VISIBLE
             mediaPlayer?.start()
+
         } else { // 일시정지
             binding.songMiniplayerIv.visibility = View.VISIBLE
             binding.songPauseIv.visibility = View.GONE
+
+            // 재생 중이 아닐 때
+            // pause를 호출하면 에러가 나기 때문에 이를 방지하기 위한 조건문
             if(mediaPlayer?.isPlaying == true){
                 mediaPlayer?.pause()
             }

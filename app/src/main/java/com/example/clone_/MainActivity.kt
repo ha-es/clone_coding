@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         song = if(songJson==null){
             Song("라일락","아이유(IU)",0,60,false,"music_lilac")
         }else{
+            // SongActivity에서 노래가 한번이라도 pause 된 경우
             gson.fromJson(songJson, Song::class.java)
         }
         setMiniPlayer(song)

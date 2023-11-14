@@ -1,5 +1,6 @@
 package com.example.clone_
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,12 +12,16 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.setFragmentResult
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.clone_.databinding.FragmentHomeBinding
+import com.google.gson.Gson
 import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
+    private var albumDatas = ArrayList<Album>()
 
     private val timer = Timer()
     private val handler = Handler(Looper.getMainLooper())
@@ -28,15 +33,44 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.homeAlbumImgIv1.setOnClickListener {
-            setFragmentResult("TitleInfo", bundleOf("title" to binding.titleLilac.text.toString()))
-            setFragmentResult("SingerInfo", bundleOf("singer" to binding.singerIu.text.toString()))
 
-            (context as MainActivity)
-                .supportFragmentManager.beginTransaction()
-                .replace(R.id.main_frm, AlbumFragment()).commitAllowingStateLoss()
+
+        // data list 생성 더미 데이터
+        albumDatas.apply {
+            add(Album("Butter", "방탄소년단 (BTS)",R.drawable.img_album_exp))
+            add(Album("Lilac", "아이유 (IU)",R.drawable.img_album_exp2))
+            add(Album("Next Level", "에스파 (AESPA)",R.drawable.img_album_exp3))
+            add(Album("Boy with Luv", "방탄소년단 (BTS)",R.drawable.img_album_exp4))
+            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)",R.drawable.img_album_exp5))
+            add(Album("Weekend", "태연 (Tae Yeon)",R.drawable.img_album_exp6))
         }
 
+        val albumRVAdapter = AlbumRVAdapter(albumDatas)
+        binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
+        binding.homeTodayMusicAlbumRv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false)
+
+
+        albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener {
+            override fun onItemClick(album: Album) {
+                changeAlbumFragment(album)
+            }
+
+            private fun changeAlbumFragment(album: Album) {
+                (context as MainActivity)
+                    .supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_frm, AlbumFragment().apply {
+                        arguments = Bundle().apply {
+                            val gson = Gson()
+                            val albumJson = gson.toJson(album)
+                            putString("album", albumJson)
+                        }
+                    }).commitAllowingStateLoss()
+            }
+
+//            override fun onRemoveAlbum(position: Int) {
+//
+//            }
+        })
 
         val bannerAdapter = BannerVPAdapter(this)
         binding.homeBannerVp.adapter = bannerAdapter
