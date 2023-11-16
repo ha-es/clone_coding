@@ -14,7 +14,7 @@ class LockerFragment : Fragment() {
 
 
     lateinit var binding: FragmentLockerBinding
-    private val infomation = arrayListOf("저장한 곡", "음악파일")
+    private val infomation = arrayListOf("저장한곡", "음악파일")
 
 
     override fun onCreateView(
@@ -25,8 +25,8 @@ class LockerFragment : Fragment() {
         binding = FragmentLockerBinding.inflate(inflater, container,false)
 
 
-        val lockerAapter = LockerVPAdapter(this)
-        binding.lockerContentVp.adapter = lockerAapter
+        val lockerAdapter = LockerVPAdapter(this)
+        binding.lockerContentVp.adapter = lockerAdapter
         TabLayoutMediator(binding.lockerContentTb, binding.lockerContentVp){
                 tab, position ->
             tab.text = infomation[position]

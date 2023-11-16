@@ -19,12 +19,22 @@ import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), CommunicationInterface {
     lateinit var binding: FragmentHomeBinding
     private var albumDatas = ArrayList<Album>()
 
     private val timer = Timer()
     private val handler = Handler(Looper.getMainLooper())
+
+
+    //miniplayer
+    override fun sendData(album: Album) {
+        if (activity is MainActivity) {
+            val activity = activity as MainActivity
+            activity.updateMainPlayerCl(album)
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +65,10 @@ class HomeFragment : Fragment() {
                 changeAlbumFragment(album)
             }
 
+            override fun onPlayAlbum(album: Album) {
+                sendData(album)
+            }
+
             private fun changeAlbumFragment(album: Album) {
                 (context as MainActivity)
                     .supportFragmentManager.beginTransaction()
@@ -66,10 +80,6 @@ class HomeFragment : Fragment() {
                         }
                     }).commitAllowingStateLoss()
             }
-
-//            override fun onRemoveAlbum(position: Int) {
-//
-//            }
         })
 
         val bannerAdapter = BannerVPAdapter(this)
@@ -87,8 +97,10 @@ class HomeFragment : Fragment() {
 
         autoSlide((pannelAdpater))
 
+
         return binding.root
     }
+
 
 
     //자동으로 넘어가기
