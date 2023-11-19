@@ -9,7 +9,6 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
 
     interface  MyItemClickListener{
         fun onItemClick(album: Album)
-        //miniplayer
         fun onPlayAlbum(album : Album)
 
     }
@@ -22,6 +21,11 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
 
     fun addItem(album: Album){
         albumList.add(album)
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int){
+        albumList.removeAt(position)
         notifyDataSetChanged()
     }
 
@@ -40,9 +44,7 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
         }
 
         //miniplayer와 연결
-        holder.binding.itemAlbumPlayImgIv.setOnClickListener {
-            mItemClickListener.onItemClick(albumList[position])
-        }
+        holder.binding.itemAlbumPlayImgIv.setOnClickListener { mItemClickListener.onPlayAlbum(albumList[position])}
     }
 
     override fun getItemCount(): Int = albumList.size

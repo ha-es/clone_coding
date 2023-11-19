@@ -1,5 +1,5 @@
 package com.example.clone_
 
-interface CommunicationInterface {
+interface SendInterface {
     fun sendData(album: Album)
 }

@@ -31,12 +31,12 @@ class AlbumFragment : Fragment() {
         val album = gson.fromJson(albumJson, Album::class.java)
         setInit(album)
 
-        setFragmentResultListener("TitleInfo") { requestKey, bundle ->
-            binding.albumMusicTitleTv.text = bundle.getString("title")
-        }
-        setFragmentResultListener("SingerInfo") { requestKey, bundle ->
-            binding.albumSingerNameTv.text = bundle.getString("singer")
-        }
+//        setFragmentResultListener("TitleInfo") { requestKey, bundle ->
+//            binding.albumMusicTitleTv.text = bundle.getString("title")
+//        }
+//        setFragmentResultListener("SingerInfo") { requestKey, bundle ->
+//            binding.albumSingerNameTv.text = bundle.getString("singer")
+//        }
 
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()

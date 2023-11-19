@@ -19,7 +19,7 @@ import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(), CommunicationInterface {
+class HomeFragment : Fragment(), SendInterface  {
     lateinit var binding: FragmentHomeBinding
     private var albumDatas = ArrayList<Album>()
 
@@ -29,7 +29,7 @@ class HomeFragment : Fragment(), CommunicationInterface {
 
     //miniplayer
     override fun sendData(album: Album) {
-        if (activity is MainActivity) {
+        if(activity is MainActivity){
             val activity = activity as MainActivity
             activity.updateMainPlayerCl(album)
         }
@@ -47,9 +47,9 @@ class HomeFragment : Fragment(), CommunicationInterface {
 
         // data list 생성 더미 데이터
         albumDatas.apply {
-            add(Album("Butter", "방탄소년단 (BTS)",R.drawable.img_album_exp))
+            add(Album("Butter", "방탄소년단 (BTS)",R.drawable.img_album_exp,Song("Butter", "방탄소년단(BTS)", 0, 60, false, "music_butter")))
             add(Album("Lilac", "아이유 (IU)",R.drawable.img_album_exp2))
-            add(Album("Next Level", "에스파 (AESPA)",R.drawable.img_album_exp3))
+            add(Album("Next Level", "에스파 (AESPA)",R.drawable.img_album_exp3, Song("Level", "에스파 (AESPA)", 0, 60, false, "music_next")))
             add(Album("Boy with Luv", "방탄소년단 (BTS)",R.drawable.img_album_exp4))
             add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)",R.drawable.img_album_exp5))
             add(Album("Weekend", "태연 (Tae Yeon)",R.drawable.img_album_exp6))
@@ -61,25 +61,21 @@ class HomeFragment : Fragment(), CommunicationInterface {
 
 
         albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener {
-            override fun onItemClick(album: Album) {
-                changeAlbumFragment(album)
+
+            override fun onItemClick(album: Album)  {
+                (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, AlbumFragment().apply {
+                    arguments = Bundle().apply {
+                        val gson = Gson()
+                        val albumJson = gson.toJson(album)
+                        putString("album", albumJson)
+                    }
+                }).commitAllowingStateLoss()
             }
 
             override fun onPlayAlbum(album: Album) {
                 sendData(album)
             }
 
-            private fun changeAlbumFragment(album: Album) {
-                (context as MainActivity)
-                    .supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_frm, AlbumFragment().apply {
-                        arguments = Bundle().apply {
-                            val gson = Gson()
-                            val albumJson = gson.toJson(album)
-                            putString("album", albumJson)
-                        }
-                    }).commitAllowingStateLoss()
-            }
         })
 
         val bannerAdapter = BannerVPAdapter(this)
