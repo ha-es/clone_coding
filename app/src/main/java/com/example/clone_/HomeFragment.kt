@@ -48,10 +48,10 @@ class HomeFragment : Fragment(), SendInterface  {
         // data list 생성 더미 데이터
         albumDatas.apply {
             add(Album("Butter", "방탄소년단 (BTS)",R.drawable.img_album_exp,Song("Butter", "방탄소년단(BTS)", 0, 60, false, "music_butter")))
-            add(Album("Lilac", "아이유 (IU)",R.drawable.img_album_exp2))
+            add(Album("Lilac", "아이유 (IU)",R.drawable.img_album_exp2, Song("Lilac", "아이유 (IU)", 0, 60, false, "music_lilac")))
             add(Album("Next Level", "에스파 (AESPA)",R.drawable.img_album_exp3, Song("Level", "에스파 (AESPA)", 0, 60, false, "music_next")))
-            add(Album("Boy with Luv", "방탄소년단 (BTS)",R.drawable.img_album_exp4))
-            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)",R.drawable.img_album_exp5))
+            add(Album("Boy with Luv", "방탄소년단 (BTS)",R.drawable.img_album_exp4, Song("Boy with Luv", "방탄소년단 (BTS)", 0, 60, false, "music_boy")))
+            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)",R.drawable.img_album_exp5, Song("BBoom BBoom", "모모랜드 (MOMOLAND)", 0, 60, false, "music_bboom")))
             add(Album("Weekend", "태연 (Tae Yeon)",R.drawable.img_album_exp6))
         }
 

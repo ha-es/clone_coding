@@ -25,16 +25,6 @@ class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     lateinit var timer: Timer
 
-    companion object { const val STRING_INTENT_KEY = "my_string_key"}
-
-    private val getResultText = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ){ result ->
-        if (result.resultCode == Activity.RESULT_OK){
-            Toast.makeText(this, result.data?.getStringExtra("title"), Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,19 +33,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         startTimer()
-        //val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString(),0,60,false,"music_lilac")
+        inputDummySongs()
+
 
 
         binding.mainPlayerCl.setOnClickListener {
-            val intent = Intent(this, SongActivity::class.java)
-            intent.putExtra("title", song.title)
-            intent.putExtra("singer",song.singer)
-            intent.putExtra("second",song.second)
-            intent.putExtra("playTime",song.playTime)
-            intent.putExtra("isPlaying",song.isPlaying)
-            intent.putExtra("music",song.music)
-           // startActivity(intent)
-            getResultText.launch(intent)
+//            val intent = Intent(this, SongActivity::class.java)
+//            intent.putExtra("title", song.title)
+//            intent.putExtra("singer",song.singer)
+//            intent.putExtra("second",song.second)
+//            intent.putExtra("playTime",song.playTime)
+//            intent.putExtra("isPlaying",song.isPlaying)
+//            intent.putExtra("music",song.music)
+//           // startActivity(intent)
+//            getResultText.launch(intent)
+
+            val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
+            editor.putInt("songId", song.id)
+            editor.apply()
+
+            val intent = Intent(this,SongActivity::class.java)
+            startActivity(intent)
         }
 
         binding.mainMiniplayerBtn.setOnClickListener {
@@ -117,17 +115,34 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-        val songJson = sharedPreferences.getString("songData",null)
+//        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+//        val songJson = sharedPreferences.getString("songData",null)
+//
+//        song = if(songJson==null){
+//            Song("라일락","아이유(IU)",0,60,false,"music_lilac")
+//        }
+//        else{
+//            // SongActivity에서 노래가 한번이라도 pause 된 경우
+//            gson.fromJson(songJson, Song::class.java)
+//        }
+//        setMiniPlayer(song)
 
-        song = if(songJson==null){
-            Song("라일락","아이유(IU)",0,60,false,"music_lilac")
+        val spf = getSharedPreferences("song", MODE_PRIVATE)
+        // songId는 SongActivity에서 onPause가 호출되었을 때
+        // 재생 중이던 노래의 id(pk)이다.
+        val songId = spf.getInt("songId", 0)
+
+        // SongDatabase의 인스턴스를 가져온다.
+        val songDB = SongDatabase.getInstance(this)!!
+
+        song = if (songId == 0){ // 재생 중이던 노래가 없었으면
+            songDB.songDao().getSong(1)
+        } else{ // 재생 중이던 노래가 있었으면
+            songDB.songDao().getSong(songId)
         }
-        else{
-            // SongActivity에서 노래가 한번이라도 pause 된 경우
-            gson.fromJson(songJson, Song::class.java)
-        }
-        setMiniPlayer(song)
+
+        Log.d("song ID", song.id.toString())
+        setMiniPlayer(song) // song의 정보로 MiniPlayer를 setting
 
     }
 
@@ -226,6 +241,101 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Song","스레드가 죽었습니다${e.message}" )
             }
         }
+    }
+
+
+    //roomDB
+    private fun inputDummySongs(){
+        val songDB = SongDatabase.getInstance(this)!!
+        val songs = songDB.songDao().getSongs()
+
+        // songs에 데이터가 이미 존재해 더미 데이터를 삽입할 필요가 없음
+        if (songs.isNotEmpty()) return
+
+        // songs에 데이터가 없을 때에는 더미 데이터를 삽입해주어야 함
+        songDB.songDao().insert(
+            Song(
+                "Lilac",
+                "아이유 (IU)",
+                0,
+                200,
+                false,
+                "music_lilac",
+                R.drawable.img_album_exp2,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Flu",
+                "아이유 (IU)",
+                0,
+                200,
+                false,
+                "music_flu",
+                R.drawable.img_album_exp2,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Butter",
+                "방탄소년단 (BTS)",
+                0,
+                190,
+                false,
+                "music_butter",
+                R.drawable.img_album_exp,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Next Level",
+                "에스파 (AESPA)",
+                0,
+                210,
+                false,
+                "music_next",
+                R.drawable.img_album_exp3,
+                false,
+            )
+        )
+
+
+        songDB.songDao().insert(
+            Song(
+                "Boy with Luv",
+                "music_boy",
+                0,
+                230,
+                false,
+                "music_boy",
+                R.drawable.img_album_exp4,
+                false,
+            )
+        )
+
+
+        songDB.songDao().insert(
+            Song(
+                "BBoom BBoom",
+                "모모랜드 (MOMOLAND)",
+                0,
+                240,
+                false,
+                "music_bboom",
+                R.drawable.img_album_exp5,
+                false,
+            )
+        )
+
+        // DB에 데이터가 잘 들어갔는지 확인
+        val songDBData = songDB.songDao().getSongs()
+        Log.d("DB data", songDBData.toString())
     }
 
 
