@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.clone_.databinding.ActivitySongBinding
 import com.google.gson.Gson
+import java.util.*
 
 class SongActivity : AppCompatActivity() {
 
@@ -62,8 +63,13 @@ class SongActivity : AppCompatActivity() {
         }
 
 
-
+        //좋아요 및 취소
+        binding.songLikeIv.setOnClickListener {
+            setLike(songs[nowPos].isLike)
+        }
     }
+
+
 
     private fun initSong(){
 //        if(intent.hasExtra("title") && intent.hasExtra("singer")){
@@ -129,7 +135,17 @@ class SongActivity : AppCompatActivity() {
 
         val music =resources.getIdentifier(song.music,"raw",this.packageName)
         mediaPlayer = MediaPlayer.create(this, music)
+
+
+        //좋아요버튼
+        if(song.isLike){
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+        }else{
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+        }
+
         setPlayerStatus(song.isPlaying)
+
 
     }
 
@@ -155,8 +171,20 @@ class SongActivity : AppCompatActivity() {
         }
     }
 
+    private fun setLike(isLike: Boolean) {
+        songs[nowPos].isLike = !isLike
+        songDB.songDao().updateIsLikeById(!isLike, songs[nowPos].id)
+
+        if (!isLike) {
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+        } else {
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+        }
+    }
+
+
     private  fun startTimer(){
-        timer=Timer(songs[nowPos].playTime, songs[nowPos].isPlaying)
+        timer= Timer(songs[nowPos].playTime, songs[nowPos].isPlaying)
         timer.start()
     }
 
@@ -200,12 +228,18 @@ class SongActivity : AppCompatActivity() {
     //사용자가 포커스를 잃었을 때 음악을 중지
     override fun onPause() {
         super.onPause()
-        songs[nowPos].second = ((songs[nowPos].playTime * binding.songProgressSb.progress)/100)/1000
+
+        // seekBar
+        songs[nowPos].second = (songs[nowPos].playTime * binding.songProgressSb.progress) / 100000
+        Log.d("second", songs[nowPos].second.toString())
+
+
         songs[nowPos].isPlaying = false
         setPlayerStatus(false)
         val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
         val editor = sharedPreferences.edit() //에디터
         editor.putInt("songId", songs[nowPos].id)
+        editor.putInt("second", songs[nowPos].second)
         editor.apply()
 
 

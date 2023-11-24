@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     lateinit var timer: Timer
 
+    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    var songs = arrayListOf<Song>()
+    lateinit var songDB:SongDatabase
+    var nowPos =0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,18 +40,11 @@ class MainActivity : AppCompatActivity() {
         startTimer()
         inputDummySongs()
 
+        initPlayList()
+        initBottomNavigation()
 
 
         binding.mainPlayerCl.setOnClickListener {
-//            val intent = Intent(this, SongActivity::class.java)
-//            intent.putExtra("title", song.title)
-//            intent.putExtra("singer",song.singer)
-//            intent.putExtra("second",song.second)
-//            intent.putExtra("playTime",song.playTime)
-//            intent.putExtra("isPlaying",song.isPlaying)
-//            intent.putExtra("music",song.music)
-//           // startActivity(intent)
-//            getResultText.launch(intent)
 
             val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
             editor.putInt("songId", song.id)
@@ -107,11 +105,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val songId = sharedPreferences.getInt("songId", 0)
+
+        nowPos = getPlayingSongPosition(songId)
+        setMiniPlayer(songs[nowPos])
+    }
+    private fun getPlayingSongPosition(songId: Int): Int{
+        for (i in 0 until songs.size){
+            if (songs[i].id == songId){
+                return i
+            }
+        }
+        return 0
+    }
+
+    private fun initPlayList(){
+        songDB = SongDatabase.getInstance(this)!!
+        songs.addAll(songDB.songDao().getSongs())
+    }
+
+
 
     private fun setMiniPlayer(song:Song){
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
-        binding.mainMiniplayerProgressSb.progress = (song.second*100000)/song.playTime
+        Log.d("songInfo", song.toString())
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val second = sharedPreferences.getInt("second", 0)
+        Log.d("spfSecond", second.toString())
+        binding.mainMiniplayerProgressSb.progress = (second * 100000 / song.playTime)
     }
     override fun onStart() {
         super.onStart()
@@ -173,7 +199,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainMiniplayerProgressSb.progress = (song.second*1000/song.playTime)
         binding.mainMiniplayerBtn.visibility = View.GONE
         binding.mainPauseBtn.visibility = View.VISIBLE
-        setPlayer(album.songs!!)
+        //setPlayer(album.songs!!)
         setPlayerStatus(true)
 
     }
