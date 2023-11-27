@@ -97,20 +97,18 @@ class SongActivity : AppCompatActivity() {
     private fun moveSong(direct:Int) {
         if (nowPos + direct < 0) {
             Toast.makeText(this, "first song", Toast.LENGTH_SHORT).show()
-        }
-        if (nowPos + direct >= songs.size){
+        } else if (nowPos + direct >= songs.size) {
             Toast.makeText(this, "last song", Toast.LENGTH_SHORT).show()
-            return
+        } else {
+            nowPos += direct
+            timer.interrupt()
+            startTimer()
+
+            mediaPlayer?.release()
+            mediaPlayer = null
+
+            setPlayer(songs[nowPos])
         }
-
-        nowPos +=direct
-        timer.interrupt()
-        startTimer()
-
-        mediaPlayer?.release()
-        mediaPlayer=null
-
-        setPlayer(songs[nowPos])
     }
 
 
@@ -177,8 +175,10 @@ class SongActivity : AppCompatActivity() {
 
         if (!isLike) {
             binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+            Toast.makeText(applicationContext, "좋아요!",Toast.LENGTH_SHORT).show()
         } else {
             binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+
         }
     }
 
@@ -232,10 +232,10 @@ class SongActivity : AppCompatActivity() {
         // seekBar
         songs[nowPos].second = (songs[nowPos].playTime * binding.songProgressSb.progress) / 100000
         Log.d("second", songs[nowPos].second.toString())
-
-
         songs[nowPos].isPlaying = false
         setPlayerStatus(false)
+
+
         val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
         val editor = sharedPreferences.edit() //에디터
         editor.putInt("songId", songs[nowPos].id)
@@ -299,6 +299,7 @@ class SongActivity : AppCompatActivity() {
             setPlayerStatus(false)
         }
 
+        // 다음으로 넘어가기
         binding.songNextIv.setOnClickListener {
             moveSong(+1)
         }
@@ -308,7 +309,7 @@ class SongActivity : AppCompatActivity() {
         }
 
         binding.songLikeIv.setOnClickListener {
-            //setLike(songs[nowPos].isLike)
+            setLike(songs[nowPos].isLike)
         }
     }
 

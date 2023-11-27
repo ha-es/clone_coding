@@ -22,9 +22,9 @@ import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(), SendInterface  {
     lateinit var binding: FragmentHomeBinding
-    private var albumDatas = ArrayList<Album>()
 
     private lateinit var songDB: SongDatabase
+    private var albumDatas = ArrayList<Album>()
 
     private val timer = Timer()
     private val handler = Handler(Looper.getMainLooper())
@@ -48,18 +48,8 @@ class HomeFragment : Fragment(), SendInterface  {
 
 
         songDB = SongDatabase.getInstance(requireContext())!!
-        albumDatas.addAll(songDB.albumDao().getAlbums())
+        albumDatas.addAll(songDB.albumDao().getAlbums()) // songDB에서 album list를 가져옵니다.
         Log.d("albumlist", albumDatas.toString())
-
-        // data list 생성 더미 데이터
-//        albumDatas.apply {
-//            add(Album("Butter", "방탄소년단 (BTS)",R.drawable.img_album_exp,Song("Butter", "방탄소년단(BTS)", 0, 60, false, "music_butter")))
-//            add(Album("Lilac", "아이유 (IU)",R.drawable.img_album_exp2, Song("Lilac", "아이유 (IU)", 0, 60, false, "music_lilac")))
-//            add(Album("Next Level", "에스파 (AESPA)",R.drawable.img_album_exp3, Song("Level", "에스파 (AESPA)", 0, 60, false, "music_next")))
-//            add(Album("Boy with Luv", "방탄소년단 (BTS)",R.drawable.img_album_exp4, Song("Boy with Luv", "방탄소년단 (BTS)", 0, 60, false, "music_boy")))
-//            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)",R.drawable.img_album_exp5, Song("BBoom BBoom", "모모랜드 (MOMOLAND)", 0, 60, false, "music_bboom")))
-//            add(Album("Weekend", "태연 (Tae Yeon)",R.drawable.img_album_exp6))
-//        }
 
         val albumRVAdapter = AlbumRVAdapter(albumDatas)
         binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
@@ -112,7 +102,7 @@ class HomeFragment : Fragment(), SendInterface  {
         songDB.albumDao().insert(
             Album(
                 1,
-                "IU 5th Album 'LILAC'",
+                "LILAC",
                 "아이유 (IU)",
                 R.drawable.img_album_exp2
             )
@@ -130,7 +120,7 @@ class HomeFragment : Fragment(), SendInterface  {
         songDB.albumDao().insert(
             Album(
                 3,
-                "iScreaM Vol.10: Next Level Remixes",
+                "Next Level",
                 "에스파 (AESPA)",
                 R.drawable.img_album_exp3
             )
@@ -139,8 +129,8 @@ class HomeFragment : Fragment(), SendInterface  {
         songDB.albumDao().insert(
             Album(
                 4,
-                "Map of the Soul Persona",
-                "뮤직 보이 (Music Boy)",
+                "Boy with Luv",
+                "방탄소년단 (BTS)",
                 R.drawable.img_album_exp4,
             )
         )
@@ -149,7 +139,7 @@ class HomeFragment : Fragment(), SendInterface  {
         songDB.albumDao().insert(
             Album(
                 5,
-                "Great!",
+                "BBoom BBoom",
                 "모모랜드 (MOMOLAND)",
                 R.drawable.img_album_exp5
             )

@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         startTimer()
         inputDummySongs()
+        inputDummyAlbums()
 
         initPlayList()
         initBottomNavigation()
@@ -141,17 +142,6 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-//        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-//        val songJson = sharedPreferences.getString("songData",null)
-//
-//        song = if(songJson==null){
-//            Song("라일락","아이유(IU)",0,60,false,"music_lilac")
-//        }
-//        else{
-//            // SongActivity에서 노래가 한번이라도 pause 된 경우
-//            gson.fromJson(songJson, Song::class.java)
-//        }
-//        setMiniPlayer(song)
 
         val spf = getSharedPreferences("song", MODE_PRIVATE)
         // songId는 SongActivity에서 onPause가 호출되었을 때
@@ -178,17 +168,18 @@ class MainActivity : AppCompatActivity() {
         timer.interrupt()
         mediaPlayer?.release()
         mediaPlayer = null
+
     }
 
     override fun onPause() {
         super.onPause()
-        setPlayerStatus(false)
         song.second = ((binding.mainMiniplayerProgressSb.progress * song.playTime)/100)/1000
         val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val songJson = gson.toJson(song)
         editor.putString("songData", songJson)
         editor.apply()
+        setPlayerStatus(false)
 
     }
 
@@ -249,7 +240,9 @@ class MainActivity : AppCompatActivity() {
                 while(true){
 
                     if(second >= playTime){
+
                         break
+
                     }
                     if (isPlaying){
                         sleep(50)
@@ -265,6 +258,7 @@ class MainActivity : AppCompatActivity() {
 
             }catch (e: InterruptedException){
                 Log.d("Song","스레드가 죽었습니다${e.message}" )
+                binding.mainMiniplayerProgressSb.progress=0
             }
         }
     }
@@ -364,5 +358,49 @@ class MainActivity : AppCompatActivity() {
         Log.d("DB data", songDBData.toString())
     }
 
+
+    //ROOM_DB
+    private fun inputDummyAlbums() {
+        val songDB = SongDatabase.getInstance(this)!!
+        val albums = songDB.albumDao().getAlbums()
+
+        if (albums.isNotEmpty()) return
+
+        songDB.albumDao().insert(
+            Album(
+                0,
+                "Lilac", "아이유 (IU)", R.drawable.img_album_exp2,
+            )
+        )
+
+        songDB.albumDao().insert(
+            Album(
+                1,
+                "Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp
+            )
+        )
+
+        songDB.albumDao().insert(
+            Album(
+                2,
+                "Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3
+            )
+        )
+
+        songDB.albumDao().insert(
+            Album(
+                3,
+                "Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4
+            )
+        )
+
+        songDB.albumDao().insert(
+            Album(
+                4,
+                "BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5
+            )
+        )
+
+    }
 
 }

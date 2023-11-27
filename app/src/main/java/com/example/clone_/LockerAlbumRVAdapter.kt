@@ -56,7 +56,7 @@ class LockerAlbumRVAdapter () : RecyclerView.Adapter<LockerAlbumRVAdapter.ViewHo
 
 
     interface OnItemClickListener{
-        fun onItemClick(album: Album)
+        //fun onItemClick(album: Album)
         fun onRemoveAlbum(songId: Int)
     }
 
@@ -67,7 +67,7 @@ class LockerAlbumRVAdapter () : RecyclerView.Adapter<LockerAlbumRVAdapter.ViewHo
     }
 
     //추가
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged") // 경고 무시 어노테이션
     fun addSongs(songs: ArrayList<Song>) {
         this.songs.clear()
         this.songs.addAll(songs)
