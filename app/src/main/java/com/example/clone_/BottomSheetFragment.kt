@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.clone_.databinding.FragmentBottomSheetBinding
+import com.example.clone_.databinding.FragmentLockerBinding
 import com.example.clone_.databinding.ItemLockerAlbumBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.tabs.TabLayoutMediator
 
 class BottomSheetFragment : BottomSheetDialogFragment() {
 
     lateinit var binding : FragmentBottomSheetBinding
-    private val songs = ArrayList<Song>()
 
 
     override fun onCreateView(
@@ -43,10 +45,9 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.bottomSheetIv4.setOnClickListener {
 
-            //songs.removeAt(0)
-
             Toast.makeText(requireActivity(), "삭제 버튼 클릭", Toast.LENGTH_SHORT).show()
 
         }
     }
+
 }
