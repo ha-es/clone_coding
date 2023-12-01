@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         initBottomNavigation()
 
 
+
         binding.mainPlayerCl.setOnClickListener {
 
             val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,SongActivity::class.java)
             startActivity(intent)
         }
+
 
         binding.mainMiniplayerBtn.setOnClickListener {
             setPlayerStatus(true)
@@ -191,8 +193,27 @@ class MainActivity : AppCompatActivity() {
         binding.mainMiniplayerBtn.visibility = View.GONE
         binding.mainPauseBtn.visibility = View.VISIBLE
         //setPlayer(album.songs!!)
+
         setPlayerStatus(true)
 
+
+    }
+
+    private fun moveSong(direct:Int) {
+        if (nowPos + direct < 0) {
+            Toast.makeText(this, "first song", Toast.LENGTH_SHORT).show()
+        } else if (nowPos + direct >= songs.size) {
+            Toast.makeText(this, "last song", Toast.LENGTH_SHORT).show()
+        } else {
+            nowPos += direct
+            timer.interrupt()
+            startTimer()
+
+            mediaPlayer?.release()
+            mediaPlayer = null
+
+            setPlayer(songs[nowPos])
+        }
     }
 
     fun setPlayerStatus(isPlaying: Boolean){

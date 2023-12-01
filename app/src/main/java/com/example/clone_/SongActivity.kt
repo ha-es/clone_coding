@@ -27,6 +27,8 @@ class SongActivity : AppCompatActivity() {
     lateinit var songDB: SongDatabase
     var nowPos = 0
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySongBinding.inflate(layoutInflater)
@@ -72,17 +74,6 @@ class SongActivity : AppCompatActivity() {
 
 
     private fun initSong(){
-//        if(intent.hasExtra("title") && intent.hasExtra("singer")){
-//            song = Song(
-//                intent.getStringExtra("title")!!,
-//                intent.getStringExtra("singer")!!,
-//                intent.getIntExtra("second",0),
-//                intent.getIntExtra("playTime",0),
-//                intent.getBooleanExtra("isPlaying", false),
-//                intent.getStringExtra("music")!!
-//
-//            )
-//        }
         val spf = getSharedPreferences("song", MODE_PRIVATE)
         val songId = spf.getInt("songId", 0)
 
@@ -135,6 +126,7 @@ class SongActivity : AppCompatActivity() {
         mediaPlayer = MediaPlayer.create(this, music)
 
 
+
         //좋아요버튼
         if(song.isLike){
             binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
@@ -170,14 +162,33 @@ class SongActivity : AppCompatActivity() {
     }
 
     private fun setLike(isLike: Boolean) {
+
+        val dao = NewSongDao()
+        val title = binding.songMusicTitleTv.text.toString()
+        val singer = binding.songSingerNameTv.text.toString()
+        val endTime = binding.songEndTimeTv.text.toString()
+
+        val song = Song(title,singer)
+
         songs[nowPos].isLike = !isLike
         songDB.songDao().updateIsLikeById(!isLike, songs[nowPos].id)
 
+
         if (!isLike) {
             binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
-            Toast.makeText(applicationContext, "좋아요!",Toast.LENGTH_SHORT).show()
+            dao.add(song)?.addOnSuccessListener {
+                Toast.makeText(this, "좋아요!",Toast.LENGTH_SHORT).show()
+
+            }?.addOnFailureListener {
+
+            }
         } else {
             binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+            dao.delete(song)?.addOnFailureListener {
+                Toast.makeText(this, "좋아요 취소",Toast.LENGTH_SHORT).show()
+            }?.addOnFailureListener {
+
+            }
 
         }
     }

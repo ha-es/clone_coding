@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -61,11 +62,16 @@ dependencies {
     //roomDB
     implementation("androidx.room:room-migration:2.6.0")
     implementation("androidx.room:room-runtime:2.6.0")
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     kapt("androidx.room:room-compiler:2.6.0")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
 
     implementation("com.google.android.material:material:1.10.0")
