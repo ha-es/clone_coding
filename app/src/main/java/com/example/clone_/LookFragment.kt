@@ -5,55 +5,111 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.clone_.databinding.FragmentLookBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [LookFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LookFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    lateinit var binding: FragmentLookBinding
+    private lateinit var songDB: SongDatabase
+
+
+    private lateinit var chartBtn : Button
+    private lateinit var videoBtn : Button
+    private lateinit var genreBtn : Button
+    private lateinit var situationBtn : Button
+    private lateinit var audioBtn : Button
+    private lateinit var atmosphereBtn : Button
+
+    private lateinit var buttonList: List<Button>
+
+    private lateinit var chartTv : TextView
+    private lateinit var videoTv : TextView
+    private lateinit var genreTv : TextView
+    private lateinit var situationTv : TextView
+    private lateinit var audioTv : TextView
+    private lateinit var atmosphereTv : TextView
+
+    private lateinit var textList: List<TextView>
+
+    lateinit var scrollView : ScrollView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_look, container, false)
+        binding = FragmentLookBinding.inflate(inflater, container, false)
+        songDB = SongDatabase.getInstance(requireContext())!!
+
+        // 스크롤 뷰 초기화
+        scrollView = binding.lookSv
+
+        // 버튼 초기화
+        chartBtn = binding.lookChartBtn
+        videoBtn =  binding.lookVideoBtn
+        genreBtn =  binding.lookGenreBtn
+        situationBtn =  binding.lookSituationBtn
+        audioBtn =  binding.lookAudioBtn
+        atmosphereBtn =  binding.lookAtmostphereBtn
+
+        buttonList = listOf(chartBtn, videoBtn, genreBtn, situationBtn, audioBtn, atmosphereBtn)
+
+        // 텍스트 초기화
+        chartTv = binding.lookChartTv
+        videoTv = binding.lookVideoTv
+        genreTv = binding.lookGenreTv
+        situationTv = binding.lookSituationTv
+        audioTv = binding.lookAudioTv
+        atmosphereTv = binding.lookAtmostphereTv
+
+        textList = listOf(chartTv, videoTv, genreTv, situationTv, audioTv, atmosphereTv)
+
+        setButtonClickListeners()
+
+        return binding.root
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LookFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LookFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onStart() {
+        super.onStart()
+        initRecyclerview()
     }
+
+    private fun initRecyclerview(){
+        val recyclerView = binding.lookChartSongRv
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        val lookAlbumRVAdapter = LockerAlbumRVAdapter()
+
+        binding.lookChartSongRv.adapter = lookAlbumRVAdapter
+        lookAlbumRVAdapter.addSongs(songDB.songDao().getSongs() as ArrayList<Song>)
+    }
+
+    private fun setButtonClickListeners() {
+        for (i in buttonList.indices) {
+            val button = buttonList[i]
+
+            button.setOnClickListener {
+                initButton(i)
+            }
+        }
+    }
+
+    private fun initButton(idx : Int) {
+        for(presentBtn : Button in buttonList) {
+            if(presentBtn == buttonList[idx]) {
+                presentBtn.setBackgroundResource(R.drawable.selected_button)
+            } else {
+                presentBtn.setBackgroundResource(R.drawable.not_selected_button)
+            }
+        }
+        scrollView.smoothScrollTo(0, textList[idx].top)
+    }
+
 }

@@ -44,12 +44,13 @@ class LoginActivity : AppCompatActivity(){
         val user = songDB.userDao().getUser(email,password)
 
 
-        user?.let {
-            Log.d("LOGIN_ACT/GET_USER","userId : ${user.id}, $user")
+        if (user != null) {
+            Log.d("LoginActivity", user.id.toString())
             saveJwt(user.id)
-            startActivity()
+            startMainActivity()
+        } else {
+            Toast.makeText(this, "회원 정보가 존재하지 않습니다", Toast.LENGTH_SHORT).show()
         }
-        Toast.makeText(this,"회원정보가 존재하지 않습니다.",Toast.LENGTH_SHORT).show()
 
     }
 
@@ -61,7 +62,7 @@ class LoginActivity : AppCompatActivity(){
         editor.apply()
     }
 
-    private fun startActivity(){
+    private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
