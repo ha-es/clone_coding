@@ -56,6 +56,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        Log.d("MAIN/JWY_TO_SERVER", getJwt().toString())
+
 
         binding.mainMiniplayerBtn.setOnClickListener {
             setPlayerStatus(true)
@@ -142,6 +144,13 @@ class MainActivity : AppCompatActivity() {
         Log.d("spfSecond", second.toString())
         binding.mainMiniplayerProgressSb.progress = (second * 100000 / song.playTime)
     }
+
+    private fun getJwt():String? {
+        var spf=this?.getSharedPreferences("auth2", AppCompatActivity.MODE_PRIVATE)
+        return spf!!.getString("jwt","")
+    }
+
+
     override fun onStart() {
         super.onStart()
 
